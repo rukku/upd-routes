@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Animate a point along a route</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <style>
+        .overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .overlay button {
+            font: 600 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            background-color: #3386c0;
+            color: #fff;
+            display: inline-block;
+            margin: 0;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .overlay button:hover {
+            background-color: #4ea0da;
+        }
+    </style>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js' charset='utf-8'></script>
+
+    <div id='map'></div>
+    <div class='overlay'>
+        <button id='replay'>Replay</button>
+    </div>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoicnVra3UiLCJhIjoiZEJocE9tSSJ9.tWSIxlu5AHgccim4JMuWLQ';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/dark-v9',
+            center: [
+                121.06858491897583,
+                14.655309057606656
+            ],
+            zoom: 15
+        });
+
+        // San Francisco
+        var origin = [
+            121.06868147850035,
+            14.653129293474231
+        ];
+
+        // Washington DC
+        var destination = [-77.032, 38.913];
+
+        // A simple line from origin to destination.
+        var route = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": [
+                            [
+                                121.07377231121063,
+                                14.648364876383699
+                            ],
+                            [
+                                121.07375621795653,
+                                14.649563775403475
+                            ],
+                            [
+                                121.07375621795653,
+                                14.650575827913206
+                            ],
+                            [
+                                121.07282280921936,
+                                14.650513547893707
+                            ],
+                            [
+                                121.07225954532623,
+                                14.650435697844442
+                            ],
+                            [
+                                121.07196986675262,
+                                14.650373417785122
+                            ],
+                            [
+                                121.0712295770645,
+                                14.650373417785122
+                            ],
+                            [
+                                121.07119739055634,
+                                14.650186577500975
+                            ],
+                            [
+                                121.07063412666321,
+                                14.650186577500975
+                            ],
+                            [
+                                121.07040882110596,
+                                14.650093157299157
+                            ],
+                            [
+                                121.07024788856506,
+                                14.649906316776098
+                            ],
+                            [
+                                121.07008695602417,
+                                14.649797326397431
+                            ],
+                            [
+                                121.06862246990204,
+                                14.649735046156707
+                            ],
+                            [
+                                121.06849372386934,
+                                14.650108727335567
+                            ],
+                            [
+                                121.0683810710907,
+                                14.650684817904763
+                            ],
+                            [
+                                121.06839716434477,
+                                14.651167487215801
+                            ],
+                            [
+                                121.06865465641023,
+                                14.652413080526458
+                            ],
+                            [
+                                121.06839716434477,
+                                14.652413080526458
+                            ],
+                            [
+                                121.06793045997621,
+                                14.652272951632437
+                            ],
+                            [
+                                121.06757640838623,
+                                14.652132822648815
+                            ],
+                            [
+                                121.06735110282897,
+                                14.652023833377386
+                            ],
+                            [
+                                121.06714189052582,
+                                14.651836994500265
+                            ],
+                            [
+                                121.06702655553818,
+                                14.651722815108045
+                            ],
+                            [
+                                121.06686562299727,
+                                14.65147369622762
+                            ],
+                            [
+                                121.06676906347275,
+                                14.65124793199762
+                            ],
+                            [
+                                121.06677711009979,
+                                14.65102216753507
+                            ],
+                            [
+                                121.06680929660797,
+                                14.650796402839957
+                            ],
+                            [
+                                121.06684148311616,
+                                14.650547282906476
+                            ],
+                            [
+                                121.06682270765305,
+                                14.6503396827456
+                            ],
+                            [
+                                121.06678247451782,
+                                14.650238477595886
+                            ],
+                            [
+                                121.06673419475555,
+                                14.65009056229299
+                            ],
+                            [
+                                121.06645256280899,
+                                14.649857011611504
+                            ],
+                            [
+                                121.06619507074358,
+                                14.649677955920493
+                            ],
+                            [
+                                121.06606632471083,
+                                14.649522255200733
+                            ],
+                            [
+                                121.06602609157561,
+                                14.649288703913683
+                            ],
+                            [
+                                121.06604218482971,
+                                14.649086292596952
+                            ],
+                            [
+                                121.06601804494858,
+                                14.6489721117717
+                            ],
+                            [
+                                121.06595367193223,
+                                14.64856728836662
+                            ],
+                            [
+                                121.06600195169449,
+                                14.648357091303696
+                            ],
+                            [
+                                121.06600999832153,
+                                14.648006762417603
+                            ],
+                            [
+                                121.06597781181335,
+                                14.648006762417603
+                            ],
+                            [
+                                121.06596976518631,
+                                14.648325950980949
+                            ],
+                            [
+                                121.06592953205109,
+                                14.648536148073717
+                            ],
+                            [
+                                121.06596976518631,
+                                14.648894261174945
+                            ],
+                            [
+                                121.06601804494858,
+                                14.64907331750615
+                            ],
+                            [
+                                121.06599390506746,
+                                14.649423644687658
+                            ],
+                            [
+                                121.0660582780838,
+                                14.649555990366066
+                            ],
+                            [
+                                121.06616288423538,
+                                14.649703906029716
+                            ],
+                            [
+                                121.06649279594421,
+                                14.649929671850197
+                            ],
+                            [
+                                121.06668591499329,
+                                14.650100942317508
+                            ],
+                            [
+                                121.06671541929244,
+                                14.650137272399432
+                            ],
+                            [
+                                121.06678783893584,
+                                14.6503396827456
+                            ],
+                            [
+                                121.06627821922304,
+                                14.650770452860094
+                            ],
+                            [
+                                121.06583565473558,
+                                14.65115970223535
+                            ],
+                            [
+                                121.06535285711288,
+                                14.651548950919254
+                            ],
+                            [
+                                121.06511950492859,
+                                14.651774714839151
+                            ],
+                            [
+                                121.065014898777,
+                                14.65200047852646
+                            ],
+                            [
+                                121.0650309920311,
+                                14.65216396243069
+                            ],
+                            [
+                                121.06508731842041,
+                                14.652459790137879
+                            ],
+                            [
+                                121.06511950492859,
+                                14.652942455539609
+                            ],
+                            [
+                                121.06449186801909,
+                                14.652926885704542
+                            ],
+                            [
+                                121.0622790455818,
+                                14.652939860567182
+                            ],
+                            [
+                                121.06232464313506,
+                                14.655018423641918
+                            ],
+                            [
+                                121.06230854988098,
+                                14.656497538914923
+                            ],
+                            [
+                                121.06234341859818,
+                                14.657688608691982
+                            ],
+                            [
+                                121.06475204229355,
+                                14.657631520527989
+                            ],
+                            [
+                                121.06660008430482,
+                                14.657584812019113
+                            ],
+                            [
+                                121.06698632240295,
+                                14.657569242513945
+                            ],
+                            [
+                                121.06755763292311,
+                                14.657522533991775
+                            ],
+                            [
+                                121.06854736804962,
+                                14.657522533991775
+                            ],
+                            [
+                                121.06853127479552,
+                                14.659375297732806
+                            ],
+                            [
+                                121.07047855854034,
+                                14.659416816068486
+                            ],
+                            [
+                                121.07143610715866,
+                                14.659432385442335
+                            ],
+                            [
+                                121.07240170240404,
+                                14.659424600755552
+                            ],
+                            [
+                                121.07274770736693,
+                                14.659393462005626
+                            ],
+                            [
+                                121.07275038957594,
+                                14.657556267925445
+                            ],
+                            [
+                                121.07275038957594,
+                                14.657493989890002
+                            ],
+                            [
+                                121.07257336378098,
+                                14.657493989890002
+                            ],
+                            [
+                                121.07159972190857,
+                                14.657501774645398
+                            ],
+                            [
+                                121.06853395700456,
+                                14.657478420378371
+                            ],
+                            [
+                                121.06743961572646,
+                                14.657486205134326
+                            ],
+                            [
+                                121.06566131114958,
+                                14.657564052678639
+                            ],
+                            [
+                                121.06238633394241,
+                                14.657641900195282
+                            ],
+                            [
+                                121.06231123209,
+                                14.652960620345809
+                            ],
+                            [
+                                121.06404662132262,
+                                14.652955430401345
+                            ],
+                            [
+                                121.0651409626007,
+                                14.652971000234391
+                            ],
+                            [
+                                121.06525361537933,
+                                14.652932075649693
+                            ],
+                            [
+                                121.06581687927246,
+                                14.652644033508086
+                            ],
+                            [
+                                121.06638818979262,
+                                14.652138012612768
+                            ],
+                            [
+                                121.06693536043167,
+                                14.651777309825372
+                            ],
+                            [
+                                121.06702387332916,
+                                14.651777309825372
+                            ],
+                            [
+                                121.06736183166502,
+                                14.652073138054517
+                            ],
+                            [
+                                121.06782853603363,
+                                14.652283331553589
+                            ],
+                            [
+                                121.06824696063994,
+                                14.652407890569018
+                            ],
+                            [
+                                121.06845617294312,
+                                14.652446815246819
+                            ],
+                            [
+                                121.0688665509224,
+                                14.652470170050176
+                            ],
+                            [
+                                121.07010036706923,
+                                14.65247536000614
+                            ],
+                            [
+                                121.07170164585112,
+                                14.652506499739353
+                            ],
+                            [
+                                121.0716614127159,
+                                14.65386107385092
+                            ],
+                            [
+                                121.07210397720335,
+                                14.653892213387204
+                            ],
+                            [
+                                121.07243388891219,
+                                14.653892213387204
+                            ],
+                            [
+                                121.07277721166611,
+                                14.653941517643942
+                            ],
+                            [
+                                121.07284158468245,
+                                14.652330041192668
+                            ],
+                            [
+                                121.07276916503906,
+                                14.652073138054517
+                            ],
+                            [
+                                121.07256799936295,
+                                14.65182401957231
+                            ],
+                            [
+                                121.07215762138368,
+                                14.651528191006905
+                            ],
+                            [
+                                121.0718357563019,
+                                14.651317996783543
+                            ],
+                            [
+                                121.07143342494966,
+                                14.651115587340895
+                            ],
+                            [
+                                121.07121616601944,
+                                14.650959887642399
+                            ],
+                            [
+                                121.07121616601944,
+                                14.650399367811994
+                            ],
+                            [
+                                121.07191085815428,
+                                14.650396772809438
+                            ],
+                            [
+                                121.0720556974411,
+                                14.650420127831287
+                            ],
+                            [
+                                121.07246339321136,
+                                14.650490192881847
+                            ],
+                            [
+                                121.07287377119063,
+                                14.650544687905677
+                            ],
+                            [
+                                121.07326805591583,
+                                14.65056804291175
+                            ],
+                            [
+                                121.07379913330077,
+                                14.650599182915972
+                            ],
+                            [
+                                121.0737857222557,
+                                14.649421049673565
+                            ],
+                            [
+                                121.07380181550978,
+                                14.648370066436886
+                            ]
+                        ]
+                    }
+                }
+            ]
+        };
+
+        // A single point that animates along the route.
+        // Coordinates are initially set to origin.
+        var point = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": origin
+                }
+            }]
+        };
+
+        // Calculate the distance in kilometers between route start/end point.
+        var lineDistance = turf.lineDistance(route.features[0], 'kilometers');
+
+        var arc = [];
+
+        // Number of steps to use in the arc and animation, more steps means
+        // a smoother arc and animation, but too many steps will result in a
+        // low frame rate
+        var steps = 2000;
+
+        // Draw an arc between the `origin` & `destination` of the two points
+        for (var i = 0; i < lineDistance; i += lineDistance / steps) {
+            var segment = turf.along(route.features[0], i, 'kilometers');
+            arc.push(segment.geometry.coordinates);
+        }
+
+        // Update the route with calculated arc coordinates
+        route.features[0].geometry.coordinates = arc;
+
+        // Used to increment the value of the point measurement against the route.
+        var counter = 0;
+
+        map.on('load', function () {
+            // Add a source and layer displaying a point which will be animated in a circle.
+            map.addSource('route', {
+                "type": "geojson",
+                "data": route
+            });
+
+            map.addSource('point', {
+                "type": "geojson",
+                "data": point
+            });
+
+            map.addLayer({
+                "id": "route",
+                "source": "route",
+                "type": "line",
+                "paint": {
+                    "line-width": 5,
+                    "line-color": "yellow"
+                }
+            });
+
+            map.addLayer({
+                "id": "point",
+                "source": "point",
+                "type": "symbol",
+                "layout": {
+                    "icon-image": "airport-15",
+                    "icon-rotate": ["get", "bearing"],
+                    "icon-rotation-alignment": "map",
+                    "icon-allow-overlap": true
+                }
+            });
+
+            function animate() {
+                // Update point geometry to a new position based on counter denoting
+                // the index to access the arc.
+                point.features[0].geometry.coordinates = route.features[0].geometry.coordinates[counter];
+
+                // Calculate the bearing to ensure the icon is rotated to match the route arc
+                // The bearing is calculate between the current point and the next point, except
+                // at the end of the arc use the previous point and the current point
+                point.features[0].properties.bearing = turf.bearing(
+                    turf.point(route.features[0].geometry.coordinates[counter >= steps ? counter - 1 : counter]),
+                    turf.point(route.features[0].geometry.coordinates[counter >= steps ? counter : counter + 1])
+                );
+
+                // Update the source with this new data.
+                map.getSource('point').setData(point);
+
+                // Request the next frame of animation so long the end has not been reached.
+                if (counter < steps) {
+                    requestAnimationFrame(animate);
+                }
+
+                counter = counter + 1;
+            }
+
+            document.getElementById('replay').addEventListener('click', function () {
+                // Set the coordinates of the original point back to origin
+                point.features[0].geometry.coordinates = origin;
+
+                // Update the source layer
+                map.getSource('point').setData(point);
+
+                // Reset the counter
+                counter = 0;
+
+                // Restart the animation.
+                animate(counter);
+            });
+
+            // Start the animation.
+            animate(counter);
+        });
+    </script>
+
+</body>
+
+</html>
