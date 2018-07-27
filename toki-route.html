@@ -583,7 +583,7 @@
         // Number of steps to use in the arc and animation, more steps means
         // a smoother arc and animation, but too many steps will result in a
         // low frame rate
-        var steps = 2000;
+        var steps = 4000;
 
         // Draw an arc between the `origin` & `destination` of the two points
         for (var i = 0; i < lineDistance; i += lineDistance / steps) {
@@ -619,16 +619,29 @@
                 }
             });
 
-            map.addLayer({
-                "id": "point",
-                "source": "point",
-                "type": "symbol",
-                "layout": {
-                    "icon-image": "airport-15",
-                    "icon-rotate": ["get", "bearing"],
-                    "icon-rotation-alignment": "map",
-                    "icon-allow-overlap": true
-                }
+            map.loadImage('icons/jeep-front2-55.png', function(error, image) {
+            // map.loadImage('icons/jeep-30.png', function(error, image) {
+                if (error) throw error;
+                map.addImage("jeep", image);
+
+                map.addLayer({
+                    "id": "point",
+                    "source": "point",
+                    "type": "symbol",
+                    "layout": {
+                        "icon-image": "jeep",
+                        // "icon-rotate": ["get", "bearing"],
+                        "icon-rotation-alignment": "map",
+                        "icon-allow-overlap": true
+                    }
+                    // Use code below with jeep-30 image
+                    // "layout": {
+                    //     "icon-image": "jeep",
+                    //     "icon-rotate": ["get", "bearing"],
+                    //     "icon-rotation-alignment": "map",
+                    //     "icon-allow-overlap": true
+                    // }
+                });
             });
 
             function animate() {
@@ -672,6 +685,10 @@
             // Start the animation.
             animate(counter);
         });
+
+        // Add map controls
+        map.addControl(new mapboxgl.NavigationControl());
+
     </script>
 
 </body>
