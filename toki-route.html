@@ -9,6 +9,21 @@
     <meta property="og:description" content="New Toki route." />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' />
+
+    <!-- start Mixpanel -->
+    <script type="text/javascript">(function (e, b) {
+            if (!b.__SV) {
+                var a, f, i, g; window.mixpanel = b; a = e.createElement("script"); a.type = "text/javascript"; a.async = !0; a.src = ("https:" === e.location.protocol ? "https:" : "http:") + '//cdn.mxpnl.com/libs/mixpanel-2.2.min.js'; f = e.getElementsByTagName("script")[0]; f.parentNode.insertBefore(a, f); b._i = []; b.init = function (a, e, d) {
+                    function f(b, h) { var a = h.split("."); 2 == a.length && (b = b[a[0]], h = a[1]); b[h] = function () { b.push([h].concat(Array.prototype.slice.call(arguments, 0))) } } var c = b; "undefined" !==
+                        typeof d ? c = b[d] = [] : d = "mixpanel"; c.people = c.people || []; c.toString = function (b) { var a = "mixpanel"; "mixpanel" !== d && (a += "." + d); b || (a += " (stub)"); return a }; c.people.toString = function () { return c.toString(1) + ".people (stub)" }; i = "disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" "); for (g = 0; g < i.length; g++)f(c, i[g]);
+                    b._i.push([a, e, d])
+                }; b.__SV = 1.2
+            }
+        })(document, window.mixpanel || []);
+        mixpanel.init("91d0d93e1754206244323d4c65568f8f");</script>
+    <!-- end Mixpanel -->
+
+
     <style>
         body {
             margin: 0;
@@ -23,6 +38,10 @@
         }
     </style>
 </head>
+
+<script type="text/javascript">
+    mixpanel.track("Toki route loaded")
+</script>
 
 <body>
 
@@ -585,7 +604,7 @@
         // Number of steps to use in the arc and animation, more steps means
         // a smoother arc and animation, but too many steps will result in a
         // low frame rate
-        var steps = 3000;
+        var steps = 2000;
 
         // Draw an arc between the `origin` & `destination` of the two points
         for (var i = 0; i < lineDistance; i += lineDistance / steps) {
