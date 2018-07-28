@@ -5,6 +5,7 @@
     <meta charset='utf-8' />
     <title>Toki route</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <meta property="og:image" content="toki.jpg">
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' />
     <style>
@@ -583,7 +584,7 @@
         // Number of steps to use in the arc and animation, more steps means
         // a smoother arc and animation, but too many steps will result in a
         // low frame rate
-        var steps = 2000;
+        var steps = 3000;
 
         // Draw an arc between the `origin` & `destination` of the two points
         for (var i = 0; i < lineDistance; i += lineDistance / steps) {
@@ -609,15 +610,15 @@
                 "data": point
             });
 
-            map.addLayer({
-                "id": "route",
-                "source": "route",
-                "type": "line",
-                "paint": {
-                    "line-width": 5,
-                    "line-color": "yellow"
-                }
-            });
+            // map.addLayer({
+            //     "id": "route",
+            //     "source": "route",
+            //     "type": "line",
+            //     "paint": {
+            //         "line-width": 5,
+            //         "line-color": "yellow"
+            //     }
+            // });
 
             map.addLayer({
                 "id": "point",
